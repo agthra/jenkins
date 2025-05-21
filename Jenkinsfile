@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        DOCKER_HOST = ''
         APP_NAME = 'jenkins'
         CONTAINER_NAME = 'laravel-running'
         PORT = '8000'
@@ -19,7 +20,8 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 echo "$DOCKER_HOST"
-                sh "unset DOCKER_HOST && docker build -t $APP_NAME ."
+                sh "docker version"
+                sh "docker build -t $APP_NAME ."
             }
         }
 
