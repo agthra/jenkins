@@ -19,29 +19,32 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                echo "$DOCKER_HOST"
-                sh "docker build -t $APP_NAME ."
+                // FIX: Pakai env.DOCKER_HOST jika mau ditampilkan
+                echo "${env.DOCKER_HOST}"
+                sh "docker build -t ${env.APP_NAME} ."
             }
         }
 
         stage('Stop Old Container') {
             steps {
                 echo 'Stopping and removing old container (if exists)...'
-                sh "docker rm -f $CONTAINER_NAME || true"
+                sh "docker rm -f ${env.CONTAINER_NAME} || true"
             }
         }
 
         stage('Run New Container') {
             steps {
                 echo 'Running new container...'
-                sh "docker run -d -p $PORT:8000 --name $CONTAINER_NAME $APP_NAME"
+                sh "docker run -d -p ${env.PORT}:8000 --name ${env.CONTAINER_NAME} ${env.APP_NAME}"
             }
         }
     }
 
     post {
         success {
-            echo "Deployment successful. Visit http://<ip-server>:$PORT"
+            script {
+                echo "Deployment successful. Visit http://<ip-server>:${env.PORT}"
+            }
         }
         failure {
             echo "Something went wrong!"
