@@ -21,6 +21,7 @@ pipeline {
                 echo 'Building Docker image...'
                 // FIX: Pakai env.DOCKER_HOST jika mau ditampilkan
                 echo "${env.DOCKER_HOST}"
+                echo $DOCKER_HOST
                 sh "docker build -t ${env.APP_NAME} ."
             }
         }
