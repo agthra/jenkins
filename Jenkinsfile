@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 echo "$DOCKER_HOST"
-                sh "docker build -t $APP_NAME ."
+                sh "unset DOCKER_HOST && docker build -t $APP_NAME ."
             }
         }
 
