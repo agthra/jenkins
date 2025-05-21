@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST = 'tcp://docker:2375'
+        DOCKER_HOST = ''
         APP_NAME = 'jenkins'
         CONTAINER_NAME = 'laravel-running'
         PORT = '8000'
