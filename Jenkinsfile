@@ -2,54 +2,35 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST = 'unix:///var/run/docker.sock'
-        APP_NAME = 'jenkins'
-        CONTAINER_NAME = 'laravel-running'
-        PORT = '8000'
+        DOCKER_IMAGE = 'laravel-app'
     }
 
     stages {
-        stage('Clone Source') {
+        stage('Clone Repo') {
             steps {
-                echo 'Cloning repository...'
                 git branch: 'main', url: 'https://github.com/agthra/jenkins.git'
+            }
+        }
+
+        stage('Clean up existing containers') {
+            steps {
+                script {
+                    // Stop and remove all running containers
+                    sh 'docker ps -aq && docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                // FIX: Pakai env.DOCKER_HOST jika mau ditampilkan
-                echo "${env.DOCKER_HOST}"
-                sh "unset DOCKER_HOST"
-                echo $DOCKER_HOST
-                sh "docker build -t ${env.APP_NAME} ."
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Run Docker Container') {
             steps {
-                echo 'Stopping and removing old container (if exists)...'
-                sh "docker rm -f ${env.CONTAINER_NAME} || true"
+                sh 'docker run -d -p 8000:8000 --name laravel-container $DOCKER_IMAGE'
             }
-        }
-
-        stage('Run New Container') {
-            steps {
-                echo 'Running new container...'
-                sh "docker run -d -p ${env.PORT}:8000 --name ${env.CONTAINER_NAME} ${env.APP_NAME}"
-            }
-        }
-    }
-
-    post {
-        success {
-            script {
-                echo "Deployment successful. Visit http://<ip-server>:${env.PORT}"
-            }
-        }
-        failure {
-            echo "Something went wrong!"
         }
     }
 }
