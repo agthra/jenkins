@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST = ''
+        DOCKER_HOST = 'unix:///var/run/docker.sock'
         APP_NAME = 'jenkins'
         CONTAINER_NAME = 'laravel-running'
         PORT = '8000'
@@ -21,7 +21,6 @@ pipeline {
                 echo 'Building Docker image...'
                 // FIX: Pakai env.DOCKER_HOST jika mau ditampilkan
                 echo "${env.DOCKER_HOST}"
-                sh "unset $DOCKER_HOST"
                 sh "docker build -t ${env.APP_NAME} ."
             }
         }
