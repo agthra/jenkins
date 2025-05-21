@@ -20,7 +20,6 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 echo "$DOCKER_HOST"
-                sh "docker version"
                 sh "docker build -t $APP_NAME ."
             }
         }
