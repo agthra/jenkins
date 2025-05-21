@@ -11,7 +11,7 @@ pipeline {
         stage('Clone Source') {
             steps {
                 echo 'Cloning repository...'
-                git branch: 'main', url: 'https://github.com/gengtzy/laravel.git'
+                git branch: 'main', url: 'https://github.com/agthra/jenkins.git'
             }
         }
 
